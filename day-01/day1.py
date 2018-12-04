@@ -12,7 +12,7 @@ def part_one():
 def part_two():
 	input_values = open("input.txt", "r")
 	frequencies = [int(frequency.strip()) for frequency in input_values]
-	
+
 	sum = 0 
 	repeat_flag = True
 	seen_frequencies = set()
@@ -36,9 +36,9 @@ def part_two():
 
 
 def main(args):
-	if args.part == 1 or args.part == "one":
+	if args.part == 1:
 		result = part_one()
-	elif args.part == 2 or args.part == "two":
+	elif args.part == 2:
 		result = part_two()
 	else:
 		result = "Invalid value provided for part argument."
