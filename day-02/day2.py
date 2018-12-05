@@ -1,7 +1,5 @@
 import argparse
 
-from collections import Counter
-
 parser = argparse.ArgumentParser(description="Day 2 challenge of the Advent of Code 2018")
 parser.add_argument("-p", "--part", type=int, choices=[1, 2], help="Determines which part of the challenge to run")
 
