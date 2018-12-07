@@ -9,9 +9,18 @@ def parse_input_file():
 	input_values = open("input.txt", "r")
 	return [specs.strip() for specs in input_values]
 
+
+def setup_fabric():
+	fabric_height = 1000
+	fabric_width = 1000
+	return np.chararray([fabric_height, fabric_width], itemsize=4, unicode=True)
+	# return [["." for x in range (fabric_width)] for y in range(fabric_height)]
+
+
 def parse_specifications(spec_data):
 	# Sample Spec Data - '#1 @ 100,366: 24x27'
 	spec_sections = spec_data.split(" ")
+
 	spec = {
 		"number": spec_sections[0][1:],
 		"x_start": int(spec_sections[2].split(",")[0]),
@@ -21,6 +30,7 @@ def parse_specifications(spec_data):
 	}
 
 	return spec
+
 
 def update_fabric_grid(fabric, spec):
 	start_height = spec["y_start"]
@@ -35,24 +45,32 @@ def update_fabric_grid(fabric, spec):
 			fabric[target_height, target_width] = "X" if fabric[target_height, target_width] != "" else spec["number"]
 
 
-
-def part_one():
-	fabric_height = 1000
-	fabric_width = 1000
-	fabric = np.chararray([fabric_height, fabric_width], itemsize=4, unicode=True)
-	# fabric = [["." for x in range (fabric_width)] for y in range(fabric_height)]
-
+def part_one(part_two=False):
+	fabric = setup_fabric()
 	claim_list = parse_input_file()
 	specs = [parse_specifications(spec) for spec in claim_list]
 
 	for spec in specs:
 		update_fabric_grid(fabric, spec)
 
+	if part_two:
+		return fabric, specs
+
 	return "The total number of square inches of fabric that are within two or more claims is: " + str(fabric.count("X").sum())
 
 
 def part_two():
-	pass
+	fabric, specs = part_one(part_two=True)
+
+	for spec in specs:
+		number_id = spec.get("number")
+		area = int(spec.get("width")) * int(spec.get("height"))
+
+		if np.count_nonzero(fabric == number_id) == area:
+			return "The ID of the only claim that does not overlap is: {id}".format(id=number_id)
+
+	return "Unable to find a number ID who has an un-affected area of fabric."
+
 
 
 def main(args):
