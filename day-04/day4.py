@@ -88,7 +88,15 @@ def get_minute_guard_is_most_asleep(guard_id, guard_schedule):
 			minute_leader = minute_value
 			occurences_leader = occurences
 
-	return (minute_leader, occurences_leader)
+	return [occurences_leader, minute_leader]
+
+
+def get_guard_most_frequently_asleep_on_the_same_minute(guard_schedules):
+	guard_minutes = {}
+	for guard_id, guard_schedule in guard_schedules.items():
+		guard_minutes[guard_id] = get_minute_guard_is_most_asleep(guard_id, guard_schedule)
+	# Returns a tuple containing [1] a list of how many times the guard slept on that minute + the specific minute value and [2] the guard ID
+	return max(zip(guard_minutes.values(), guard_minutes.keys()))
 
 
 def part_one():
@@ -106,7 +114,15 @@ def part_one():
 
 
 def part_two():
-	pass
+	guard_schedule = parse_input_file()
+	guard_schedule.sort(key=get_datetime)
+	guard_sleep_schedules = parse_schedule_log(guard_schedule)
+
+	minute_values, guard_id = get_guard_most_frequently_asleep_on_the_same_minute(guard_sleep_schedules)
+	
+	print("Guard ID: {} was most frequently asleep on the same minute {} at {} times.".format(guard_id, minute_values[1], minute_values[0]))
+
+	return int(guard_id) * int(minute_values[1])
 
 
 def main(args):
