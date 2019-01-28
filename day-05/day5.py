@@ -10,27 +10,31 @@ def parse_input_file():
 
 def part_one():
 	polymer = parse_input_file()
-	polymer_length = len(polymer)
-	reaction = True
+	polymer_flag = True
 
-	while reaction:
+	while polymer_flag:
+		polymer_length = len(polymer)
+
 		for letter_index in range(polymer_length):
 			first_index = letter_index
 			next_index = first_index + 1
-			polymer_flag = False
 
 			if next_index < polymer_length:
 				first_letter = polymer[first_index]
 				next_letter = polymer[next_index]
 
+				# If there is a reaction (ie. Same letter, but different capitilzation/case)
 				if first_letter != next_letter and first_letter.lower() == next_letter.lower():
-					polymer_flag = True
-					polymer = polymer[:first_index] + polymer[next_index:]
-			elif not polymer_flag:
+					# Craft new polymer string by removing the reactioned characters.
+					polymer = polymer[:first_index] + polymer[next_index + 1:]
+					# Have to break in order to re-evaluate the newly created polymer (as the length has now changed).
+					break
+					
+			# If there is no more reactions in the polymer, exit the infinite loop.
+			else:
+				print("No more reactions")
+				polymer_flag = False
 				break
-
-		if reaction == False:
-			break
 
 	return len(polymer)
 
