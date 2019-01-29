@@ -1,4 +1,5 @@
 import argparse
+import re
 
 parser = argparse.ArgumentParser(description="Day 5 challenge of the Advent of Code 2018")
 parser.add_argument("-p", "--part", type=int, choices=[1, 2], help="Determines which part of the challenge to run")
@@ -8,8 +9,8 @@ def parse_input_file():
 	return open("input.txt", "r").read().strip()
 
 
-def part_one():
-	polymer = parse_input_file()
+def part_one(polymer=None):
+	polymer = polymer if polymer else parse_input_file()
 	polymer_flag = True
 
 	while polymer_flag:
@@ -29,10 +30,9 @@ def part_one():
 					polymer = polymer[:first_index] + polymer[next_index + 1:]
 					# Have to break in order to re-evaluate the newly created polymer (as the length has now changed).
 					break
-					
+
 			# If there is no more reactions in the polymer, exit the infinite loop.
 			else:
-				print("No more reactions")
 				polymer_flag = False
 				break
 
@@ -41,7 +41,26 @@ def part_one():
 
 
 def part_two():
-	pass
+	polymer = parse_input_file()
+	alphabet = "abcdefghijklmnopqrstuvwxyz"
+	shortened_polymers = {}
+	reacted_polymers = {}
+
+	for letter in alphabet:
+		temp_polymer = re.sub("[{}{}]".format(letter, letter.upper()), "", polymer)
+		shortened_polymers[letter] = temp_polymer
+
+	for letter, polymer in shortened_polymers.items():
+		reacted_polymer_length = part_one(polymer)
+		reacted_polymers[letter] = reacted_polymer_length
+
+	shortest_polymer_length_letter = min(reacted_polymers, key=reacted_polymers.get)
+	length_of_shortest_polymer = reacted_polymers[shortest_polymer_length_letter]
+	
+	return ("The shortest polymer length is {length} with the removal of letter '{letter}'.".format(
+		length=length_of_shortest_polymer, 
+		letter=shortest_polymer_length_letter)
+	)
 
 
 def main(args):
